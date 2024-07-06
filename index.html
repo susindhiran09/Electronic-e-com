@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Orders</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-image: url('backround1.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container, .order-container {
+            max-width: 800px;
+            width: 90%;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h1 {
+            color: violet;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, textarea {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            background-color:violet;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 10px;
+            padding: 8px 16px;
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            background-color: violet;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: violet;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #444;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        #total-items {
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            th, td {
+                padding: 8px;
+            }
+        }
+        #feedback-list p {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Page -->
+        <div class="container" id="login-page">
+            <h1>Login</h1>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <p>Don't have an account? <a href="#" onclick="showPage('signup-page')">Sign Up</a></p>
+            </form>
+        </div>
+
+        <!-- Sign-Up Page -->
+        <div class="container" id="signup-page" style="display: none;">
+            <h1>Sign Up</h1>
+            <form id="signup-form">
+                <input type="text" id="new-username" placeholder="Username" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="new-password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+                <p>Already have an account? <a href="#" onclick="showPage('login-page')">Login</a></p>
+            </form>
+        </div>
+
+        <!-- Home Page -->
+        <div class="container" id="home-page" style="display: none;">
+            <h1>Welcome to E-commerce</h1>
+            <nav>
+                <a href="#" onclick="showPage('product-page')">Products</a>
+                <a href="#" onclick="showPage('order-page')">Order Details</a>
+                <a href="#" onclick="showPage('feedback-page')">Customer Feedback</a>
+            </nav>
+        </div>
+
+        <!-- Product Pages -->
+        <div class="container" id="product-page" style="display: none;">
+            <h1>Product Details</h1>
+            <nav>
+                <a href="#" onclick="showProduct('laptop')">Laptop</a>
+                <a href="#" onclick="showProduct('phone')">Phone</a>
+                <a href="#" onclick="showProduct('tablet')">Tablet</a>
+                <a href="#" onclick="showProduct('monitor')">Monitor</a>
+                <a href="#" onclick="showPage('home-page')">Back to Home</a>
+            </nav>
+            <div id="product-details">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Order Details Page -->
+        <div class="order-container" id="order-page" style="display: none;">
+            <h1>E-commerce Orders</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Item</th>
+                        <th>Image</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="order-list">
+                    <!-- Orders will be dynamically added here -->
+                </tbody>
+            </table>
+            <p>Total items sold: <span id="total-items">0</span></p>
+            <button onclick="showPage('home-page')">Back to Home</button>
+        </div>
+
+        <!-- Customer Feedback Page -->
+        <div class="container" id="feedback-page" style="display: none;">
+            <h1>Customer Feedback</h1>
+            <form id="feedback-form">
+                <input type="text" id="customer-name" placeholder="Your Name" required>
+                <input type="email" id="customer-email" placeholder="Your Email" required>
+                <textarea id="customer-feedback" placeholder="Your Feedback" required></textarea>
+                <button type="submit">Submit Feedback</button>
+            </form>
+            <div id="feedback-list">
+                <h3>Feedbacks:</h3>
+            </div>
+            <button onclick="showPage('home-page')">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        let users = [
+            { username: 'user', password: 'password' },
+            { username: 'susindhiran', password: 'susi' }
+        ];
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const user = users.find(user => user.username === username && user.password === password);
+            if (user) {
+                showPage('home-page');
+            } else {
+                alert('Invalid Username or Password');
+            }
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const newUsername = document.getElementById('new-username').value;
+            const email = document.getElementById('email').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            users.push({ username: newUsername, password: newPassword });
+            alert('Sign up successful! Please log in.');
+            showPage('login-page');
+        });
+
+        function showPage(pageId) {
+            const pages = ['login-page', 'signup-page', 'home-page', 'product-page', 'order-page', 'feedback-page'];
+            pages.forEach(page => {
+                document.getElementById(page).style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+
+            if (pageId === 'product-page') {
+                showProduct('laptop');
+            }
+        }
+
+        function showProduct(productName) {
+            const products = {
+                'laptop': {
+                    id: 1,
+                    image: 'download.jpg',
+                    name: 'Laptop',
+                    price: '$1000',
+                    description: 'High-performance laptop with 16GB RAM and 512GB SSD.'
+                },
+                'phone': {
+                    id: 2,
+                    image: 'banner-mobile-720x761-080422.avif',
+                    name: 'Phone',
+                    price: '$500',
+                    description: 'Smartphone with 8GB RAM, 128GB storage, and a 48MP camera.'
+                },
+                'tablet': {
+                    id: 3,
+                    image: 'Lenovo-Tab-M8-HD.jpg',
+                    name: 'Tablet',
+                    price: '$300',
+                    description: 'Compact tablet with 4GB RAM and 64GB storage.'
+                },
+                'monitor': {
+                    id: 4,
+                    image: 'download (1).jpg',
+                    name: 'Monitor',
+                    price: '$200',
+                    description: '24-inch full HD monitor with IPS technology.'
+                }
+            };
+
+            const product = products[productName];
+            if (product) {
+                const productDetailsDiv = document.getElementById('product-details');
+                productDetailsDiv.innerHTML = `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                        </div>
+                        <div class="product-info">
+                            <h2>${product.name}</h2>
+                            <p><strong>Price:</strong> ${product.price}</p>
+                            <p>${product.description}</p>
+                            <button onclick="addToCart('${product.name}', 1, '${product.image}')">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        let orders = [];
+
+        function addToCart(itemName, quantity, image) {
+            const existingOrder = orders.find(order => order.item === itemName);
+            if (existingOrder) {
+                existingOrder.quantity += quantity;
+            } else {
+                const newOrder = {
+                    id: orders.length + 1,
+                    item: itemName,
+                    quantity: quantity,
+                    image: image
+                };
+                orders.push(newOrder);
+            }
+            displayOrders();
+            calculateAndDisplayTotalItems();
+            alert(`${itemName} has been added to the cart.`);
+        }
+
+        function removeFromCart(orderId) {
+            orders = orders.filter(order => order.id !== orderId);
+            displayOrders();
+            calculateAndDisplayTotalItems();
+            alert(`Order ID ${orderId} has been removed from the cart.`);
+        }
+
+        function calculateTotalItems(orders) {
+            return orders.reduce((total, order) => total + order.quantity, 0);
+        }
+
+        function calculateAndDisplayTotalItems() {
+            const totalItems = calculateTotalItems(orders);
+            const totalItemsElement = document.getElementById('total-items');
+            totalItemsElement.textContent = totalItems;
+        }
+
+        function displayOrders() {
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = '';
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.item}</td>
+                    <td><img src="${order.image}" alt="${order.item}"></td>
+                    <td>${order.quantity}</td>
+                    <td><button onclick="removeFromCart(${order.id})">Remove</button></td>
+                `;
+                orderList.appendChild(row);
+            });
+        }
+
+        if (document.getElementById('order-page')) {
+            displayOrders();
+        }
+
+        const feedbackForm = document.getElementById('feedback-form');
+        feedbackForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('customer-name').value;
+            const email = document.getElementById('customer-email').value;
+            const feedback = document.getElementById('customer-feedback').value;
+
+            const feedbackList = document.getElementById('feedback-list');
+            const feedbackItem = document.createElement('p');
+            feedbackItem.textContent = `${name} (${email}): ${feedback}`;
+            feedbackList.appendChild(feedbackItem);
+
+            feedbackForm.reset();
+        });
+    </script>
+</body>
+</html>
